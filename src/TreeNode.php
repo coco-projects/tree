@@ -511,7 +511,7 @@ final class TreeNode extends DataItem
      *******************************************************************/
 
     /**
-     * @return string|false
+     * @return string
      */
     public function __toString()
     {
@@ -641,7 +641,6 @@ final class TreeNode extends DataItem
             })(),
         ];
     }
-
 
     /**
      * 返回当前对象及所有下级元素转为数组，不递归

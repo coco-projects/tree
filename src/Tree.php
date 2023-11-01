@@ -49,4 +49,49 @@ class Tree
 
         return $obj;
     }
+
+    /**
+     * 将树导出为自定义结构的数组
+     *
+     * @param TreeNode $tree
+     * @param          $callable
+     *
+     * @return array
+     */
+    public static function transformer(TreeNode $tree, $callable):array
+    {
+        $result = call_user_func_array($callable, [$tree]);
+
+        return static::_processArray($result, $tree, $callable);
+    }
+
+    /**
+     * @param array    $arr
+     * @param TreeNode $treeNode
+     * @param callable $callable
+     *
+     * @return array
+     */
+    private static function _processArray(array &$arr, TreeNode $treeNode, callable $callable):array
+    {
+        foreach ($arr as $k => &$v) {
+            if ($v == '__CHILDS_FIELD__') {
+                $v = (function () use ($treeNode, $callable) {
+                    $childs = [];
+                    $treeNode->eachChilds(function (TreeNode $childNode) use (&$childs, $callable) {
+
+                        $childs[] = static::transformer($childNode, $callable);
+                    });
+
+                    return $childs;
+                })();
+            }
+
+            if (is_array($v)) {
+                static::_processArray($v, $treeNode, $callable);
+            }
+        }
+
+        return $arr;
+    }
 }
