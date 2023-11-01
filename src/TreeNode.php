@@ -714,7 +714,7 @@ final class TreeNode extends DataItem
 
 
     /**
-     * 过滤器，过滤返回 false 就忽略指定元素，否则保留指定元素
+     * 过滤器，过滤函数返回 false 就忽略指定元素，否则保留指定元素，返回还是树状结构，被忽略的元素，子节点都会被舍弃，返回此对象的副本，不会对此对象本身造成影响
      *
      * @param callable $callable
      *
@@ -737,6 +737,26 @@ final class TreeNode extends DataItem
         }
 
         return $copy;
+    }
+
+    /**
+     * 查找器，过滤函数返回 false 就忽略指定元素，否则保留指定元素，返回满足条件的节点数组
+     *
+     * @param callable $callable
+     *
+     * @return TreeNode[]
+     */
+    public function searchNodes(callable $callable): array
+    {
+        $nodes = [];
+
+        $this->eachAllDFS(function (self $childNode) use ($callable, &$nodes) {
+            if (call_user_func_array($callable, [$childNode])) {
+                $nodes[] = $childNode;
+            }
+        });
+
+        return $nodes;
     }
 
     /**

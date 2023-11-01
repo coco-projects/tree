@@ -160,6 +160,94 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
         return count($this->getData());
     }
 
+    public function searchByField(string $field, callable $callback): bool
+    {
+        $value = $this->getField($field);
+
+        return call_user_func_array($callback, [$value]);
+    }
+
+    public function isEquals(string $field, mixed $val): bool
+    {
+        return $this->searchByField($field, function ($value) use ($val) {
+            return $val == $value;
+        });
+    }
+
+    public function isStrictEqual(string $field, mixed $val): bool
+    {
+        return $this->searchByField($field, function ($value) use ($val) {
+            return $val === $value;
+        });
+    }
+
+
+    public function isGreaterThan(string $field, mixed $val): bool
+    {
+        return $this->searchByField($field, function ($value) use ($val) {
+            return $value > $val;
+        });
+    }
+
+    public function isGreaterThanOrEqualTo(string $field, mixed $val): bool
+    {
+        return $this->searchByField($field, function ($value) use ($val) {
+            return $value >= $val;
+        });
+    }
+
+    public function isLessThan(string $field, mixed $val): bool
+    {
+        return $this->searchByField($field, function ($value) use ($val) {
+            return $value < $val;
+        });
+    }
+
+    public function isLessThanOrEqualTo(string $field, mixed $val): bool
+    {
+        return $this->searchByField($field, function ($value) use ($val) {
+            return $value <= $val;
+        });
+    }
+
+    public function isArray(string $field): bool
+    {
+        return $this->searchByField($field, function ($value) {
+            return is_array($value);
+        });
+    }
+
+    public function isStartWith(string $field, string $prefix): bool
+    {
+        return $this->searchByField($field, function ($value) use ($prefix) {
+            if (!is_string($value)) {
+                return false;
+            }
+            return str_starts_with($value, $prefix);
+        });
+    }
+
+    public function isEndWith(string $field, string $suffix): bool
+    {
+        return $this->searchByField($field, function ($value) use ($suffix) {
+            if (!is_string($value)) {
+                return false;
+            }
+            return str_ends_with($value, $suffix);
+        });
+    }
+
+    public function isContainsWith(string $field, string $substring): bool
+    {
+        return $this->searchByField($field, function ($value) use ($substring) {
+            if (!is_string($value)) {
+                return false;
+            }
+            return str_contains($value, $substring);
+        });
+    }
+
+
     public function destroy(): void
     {
         $this->data = [];
