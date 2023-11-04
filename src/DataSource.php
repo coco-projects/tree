@@ -7,7 +7,7 @@
     /**
      * 数据库查出的数组记录直接导入，自动生成树状结构
      */
-final class DataSource
+class DataSource
 {
     public array       $data        = [];
     public string|null $idField     = null;

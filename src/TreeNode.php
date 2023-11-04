@@ -6,7 +6,7 @@
 
     use LogicException;
 
-final class TreeNode extends DataItem
+class TreeNode extends DataItem
 {
     const SORT_ORDER_ASC  = 'asc';
     const SORT_ORDER_DESC = 'desc';
