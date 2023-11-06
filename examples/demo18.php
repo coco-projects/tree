@@ -80,4 +80,4 @@
     $tree = Tree::fromSource($source);
 
     $arr = $tree->toArrayAll();
-    print_r($arr);exit;;
+    print_r(json_encode($arr));
