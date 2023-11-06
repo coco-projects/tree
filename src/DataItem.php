@@ -6,12 +6,23 @@
 
 class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
 {
-    public array $data = [];
+    private array $data = [];
 
     public function __construct(array $data = [])
     {
         $this->importData($data);
     }
+
+    /**
+     * @param mixed $var
+     *
+     * @return string
+     */
+    private static function hash(mixed $var): string
+    {
+        return is_object($var) ? spl_object_hash($var) : $var;
+    }
+
 
     /**
      * @param callable $callback
@@ -50,65 +61,61 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * @param string $key
+     * @param string $offset
      *
      * @return bool
      */
-    public function hasField(string $key): bool
+    public function hasField(string $offset): bool
     {
-        return isset($this->data[$key]);
+        return array_key_exists(self::hash($offset), $this->data);
     }
 
     /**
-     * @param string $key
+     * @param string $offset
      * @param mixed  $value
      *
      * @return $this
      */
-    public function setField(string $key, mixed $value): static
+    public function setField(string $offset, mixed $value): static
     {
-        $this->data[$key] = $value;
+        $this->data[self::hash($offset)] = $value;
 
         return $this;
     }
 
     /**
-     * @param string $key
+     * @param string $offset
      *
      * @return $this
      */
-    public function removeField(string $key): static
+    public function removeField(string $offset): static
     {
-        unset($this->data[$key]);
+        unset($this->data[self::hash($offset)]);
 
         return $this;
     }
 
     /**
-     * @param string $key
+     * @param string $offset
      *
      * @return mixed
      */
-    public function fetchField(string $key): mixed
+    public function fetchField(string $offset): mixed
     {
-        $value = $this->getField($key);
-        $this->removeField($key);
+        $value = $this->getField($offset);
+        $this->removeField($offset);
 
         return $value;
     }
 
     /**
-     * @param string $key
+     * @param string $offset
      *
      * @return mixed
      */
-    public function getField(string $key): mixed
+    public function &getField(string $offset): mixed
     {
-        if ($this->hasField($key)) {
-            return $this->data[$key];
-        }
-
-        return null;
+        return $this->data[self::hash($offset)];
     }
 
     /**
@@ -122,7 +129,7 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * @inheritDoc
      */
-    public function offsetGet($offset): mixed
+    public function &offsetGet($offset): mixed
     {
         return $this->getField($offset);
     }
@@ -246,7 +253,6 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
             return str_contains($value, $substring);
         });
     }
-
 
     public function destroy(): void
     {

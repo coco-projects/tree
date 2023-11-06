@@ -157,7 +157,7 @@ final class TreeTest extends TestCase
         $this->nodes[0]->fetchField('k3');
 
         $this->assertEquals($this->nodes[0]->getData(), [
-            "k1" => "v1",
+            'k1' => 'v1',
         ]);
     }
 
@@ -345,7 +345,6 @@ final class TreeTest extends TestCase
 
     public function testJ()
     {
-
         $datas = [
             [
                 'id'     => 1,
