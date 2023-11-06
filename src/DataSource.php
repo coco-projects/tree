@@ -91,7 +91,7 @@ class DataSource
      *
      * @return $this
      */
-    public function setData(array $data): self
+    public function setData(array $data): static
     {
         $this->data = $data;
 
@@ -111,7 +111,7 @@ class DataSource
      *
      * @return $this
      */
-    public function setIdField(string $idField): self
+    public function setIdField(string $idField): static
     {
         $this->idField = $idField;
 
@@ -132,7 +132,7 @@ class DataSource
      *
      * @return $this
      */
-    public function setDataFields(string $dataField, callable $callback = null): self
+    public function setDataFields(string $dataField, callable $callback = null): static
     {
         if (is_callable($callback)) {
             $this->dataFields[$dataField] = $callback;
@@ -156,7 +156,7 @@ class DataSource
      *
      * @return $this
      */
-    public function setParentField(string $parentField): self
+    public function setParentField(string $parentField): static
     {
         $this->parentField = $parentField;
 
@@ -176,7 +176,7 @@ class DataSource
      *
      * @return $this
      */
-    public function setRootId(int $rootId): self
+    public function setRootId(int $rootId): static
     {
         $this->rootId = $rootId;
 

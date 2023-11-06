@@ -54,15 +54,15 @@ class Tree
      * 将树导出为自定义结构的数组
      *
      * @param TreeNode $tree
-     * @param          $callable
+     * @param callable $callable
      *
      * @return array
      */
-    public static function transformer(TreeNode $tree, $callable):array
+    public static function transformer(TreeNode $tree, callable $callable): array
     {
         $result = call_user_func_array($callable, [$tree]);
 
-        return static::_processArray($result, $tree, $callable);
+        return self::_processArray($result, $tree, $callable);
     }
 
     /**
@@ -72,7 +72,7 @@ class Tree
      *
      * @return array
      */
-    private static function _processArray(array &$arr, TreeNode $treeNode, callable $callable):array
+    private static function _processArray(array &$arr, TreeNode $treeNode, callable $callable): array
     {
         foreach ($arr as $k => &$v) {
             if ($v == '__CHILDS_FIELD__') {
@@ -88,7 +88,7 @@ class Tree
             }
 
             if (is_array($v)) {
-                static::_processArray($v, $treeNode, $callable);
+                self::_processArray($v, $treeNode, $callable);
             }
         }
 

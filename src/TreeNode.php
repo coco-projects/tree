@@ -20,15 +20,15 @@ class TreeNode extends DataItem
      */
     public array $childsNode = [];
 
-    public function __construct(int $id, ?self $parentNode = null, array $data = [])
+    public function __construct(int $id, ?TreeNode $parentNode = null, array $data = [])
     {
         parent::__construct($data);
         $this->setId($id);
         $this->childsNode = [];
-        ($parentNode instanceof static) and $this->appendTo($parentNode);
+        ($parentNode instanceof TreeNode) and $this->appendTo($parentNode);
     }
 
-    public static function makeNode(int $id, ?self $parentNode = null, array $data = []): static
+    public static function makeNode(int $id, ?TreeNode $parentNode = null, array $data = []): static
     {
         return new static($id, $parentNode, $data);
     }
@@ -60,9 +60,9 @@ class TreeNode extends DataItem
     }
 
     /**
-     * @return self|null
+     * @return $this|null
      */
-    public function getParentNode(): ?self
+    public function getParentNode(): ?TreeNode
     {
         return $this->parentNode;
     }
@@ -72,7 +72,7 @@ class TreeNode extends DataItem
      *
      * @return $this
      */
-    public function setParentNode(?self $parentNode): self
+    public function setParentNode(?TreeNode $parentNode): static
     {
         $this->parentNode = $parentNode;
 
@@ -116,7 +116,7 @@ class TreeNode extends DataItem
         $isCatenary = false;
         $currentId  = $tree->getId();
 
-        $tree->eachParents(function (self $parentNode) use ($currentId, &$isCatenary) {
+        $tree->eachParents(function (TreeNode $parentNode) use ($currentId, &$isCatenary) {
             if ($parentNode->getId() == $currentId) {
                 $isCatenary = true;
                 return false;
@@ -133,7 +133,7 @@ class TreeNode extends DataItem
      *
      * @return TreeNode
      */
-    public function eachParents(callable $callable): self
+    public function eachParents(callable $callable): static
     {
         while ($parentNode = $this->getParentNode()) {
             if ($callable($parentNode) === false) {
@@ -155,7 +155,7 @@ class TreeNode extends DataItem
     {
         if (!$this->isTopNode()) {
             $parentsNode = [];
-            $this->eachParents(function (self $parentNode) use (&$parentsNode) {
+            $this->eachParents(function (TreeNode $parentNode) use (&$parentsNode) {
                 $parentsNode[] = $parentNode;
             });
 
@@ -170,7 +170,7 @@ class TreeNode extends DataItem
      *
      * @return TreeNode|null
      */
-    public function getTopParent(): ?self
+    public function getTopParent(): ?TreeNode
     {
         $parentsNode = $this->getParentsNode();
 
@@ -191,10 +191,10 @@ class TreeNode extends DataItem
      *
      * @return TreeNode|null
      */
-    public function getChildRecrusive(int $childId): ?self
+    public function getChildRecrusive(int $childId): ?TreeNode
     {
         $childNode_ = null;
-        $this->eachChildsDFS(function (self $childNode) use (&$childNode_, $childId) {
+        $this->eachChildsDFS(function (TreeNode $childNode) use (&$childNode_, $childId) {
             if ($childNode->getId() == $childId) {
                 $childNode_ = $childNode;
             }
@@ -210,9 +210,9 @@ class TreeNode extends DataItem
      *
      * @return TreeNode
      */
-    public function removeChildRecrusive(int $childId): self
+    public function removeChildRecrusive(int $childId): static
     {
-        $this->eachChildsDFS(function (self $childNode) use (&$childId) {
+        $this->eachChildsDFS(function (TreeNode $childNode) use (&$childId) {
             if (($childNode->getId() == $childId) && $childNode->getParentNode()) {
                 $childNode->getParentNode()->removeChild($childNode->getId());
             }
@@ -229,7 +229,7 @@ class TreeNode extends DataItem
      *
      * @return TreeNode
      */
-    public function removeChild(int $childId): self
+    public function removeChild(int $childId): static
     {
         if (isset($this->childsNode[$childId])) {
             $this->childsNode[$childId]->setParentNode(null);
@@ -246,17 +246,17 @@ class TreeNode extends DataItem
      *
      * @return $this
      */
-    public function moveNodeToNewParent(int $toMoveNodeId, int $newParentNodeId): self
+    public function moveNodeToNewParent(int $toMoveNodeId, int $newParentNodeId): static
     {
         $toMoveNode = null;
-        $this->eachChildsDFS(function (self $childNode) use (&$toMoveNode, $toMoveNodeId) {
+        $this->eachChildsDFS(function (TreeNode $childNode) use (&$toMoveNode, $toMoveNodeId) {
             if ($childNode->getId() == $toMoveNodeId) {
                 $toMoveNode = $childNode;
             }
         });
 
         $newParentNode = null;
-        $this->eachChildsDFS(function (self $childNode) use (&$newParentNode, $newParentNodeId) {
+        $this->eachChildsDFS(function (TreeNode $childNode) use (&$newParentNode, $newParentNodeId) {
             if ($childNode->getId() == $newParentNodeId) {
                 $newParentNode = $childNode;
             }
@@ -283,7 +283,7 @@ class TreeNode extends DataItem
      *
      * @return TreeNode
      */
-    public function addChildRecrusive(self $childNodeToAdd, int $toChildNodeId): self
+    public function addChildRecrusive(TreeNode $childNodeToAdd, int $toChildNodeId): static
     {
         if (($obj = $this->getChildRecrusive($toChildNodeId)) instanceof static) {
             $obj->addChild($childNodeToAdd);
@@ -354,7 +354,7 @@ class TreeNode extends DataItem
      *
      * @return TreeNode
      */
-    public function addChild(self $childNode): self
+    public function addChild(TreeNode $childNode): static
     {
         //要找爹
         //如果之前有爹，先把之前爹的孩子列表中的他删除
@@ -390,7 +390,7 @@ class TreeNode extends DataItem
      *
      * @return TreeNode
      */
-    public function eachChilds(callable $childProcessor): self
+    public function eachChilds(callable $childProcessor): static
     {
         $childsArray = $this->getChildArray();
 
@@ -413,7 +413,7 @@ class TreeNode extends DataItem
      *
      * @return TreeNode
      */
-    public function eachAllDFS(callable $childProcessor): self
+    public function eachAllDFS(callable $childProcessor): static
     {
         call_user_func_array($childProcessor, [$this]);
         $childsArray = $this->getChildArray();
@@ -431,7 +431,7 @@ class TreeNode extends DataItem
      *
      * @return TreeNode
      */
-    public function eachAllBFS(callable $childProcessor): self
+    public function eachAllBFS(callable $childProcessor): static
     {
         static $stackArray = null;
 
@@ -453,7 +453,7 @@ class TreeNode extends DataItem
      *
      * @return TreeNode
      */
-    public function eachChildsDFS(callable $childProcessor): self
+    public function eachChildsDFS(callable $childProcessor): static
     {
         $childsArray = $this->getChildArray();
 
@@ -473,7 +473,7 @@ class TreeNode extends DataItem
      *
      * @return TreeNode
      */
-    public function eachChildsBFS(callable $childProcessor): self
+    public function eachChildsBFS(callable $childProcessor): static
     {
         static $stackArray = null;
 
@@ -496,7 +496,7 @@ class TreeNode extends DataItem
     public function countChildsRecrusive(): int
     {
         $total = 0;
-        $this->eachChildsDFS(function (self $childNode) use (&$total) {
+        $this->eachChildsDFS(function (TreeNode $childNode) use (&$total) {
             $total++;
         });
 
@@ -580,7 +580,7 @@ class TreeNode extends DataItem
      *
      * @return TreeNode
      */
-    public function appendTo(self $parentNode): self
+    public function appendTo(TreeNode $parentNode): static
     {
         $parentNode->addChild($this);
 
@@ -591,7 +591,7 @@ class TreeNode extends DataItem
     /**
      * @return static
      */
-    public function getCopy(): self
+    public function getCopy(): static
     {
         return clone $this;
     }
@@ -628,7 +628,7 @@ class TreeNode extends DataItem
             'data'     => $this->getData(),
             'childs'   => (function () use ($whitIdIndex) {
                 $childs = [];
-                $this->eachChilds(function (self $childNode) use (&$childs, $whitIdIndex) {
+                $this->eachChilds(function (TreeNode $childNode) use (&$childs, $whitIdIndex) {
 
                     if ($whitIdIndex) {
                         $childs[$childNode->getId()] = $childNode->toArrayAll($whitIdIndex);
@@ -658,7 +658,7 @@ class TreeNode extends DataItem
             'data'     => $this->getData(),
             'childs'   => (function () use ($whitIdIndex) {
                 $childs = [];
-                $this->eachChilds(function (self $childNode) use (&$childs, $whitIdIndex) {
+                $this->eachChilds(function (TreeNode $childNode) use (&$childs, $whitIdIndex) {
 
                     $d = [
                         'id'       => $childNode->getId(),
@@ -697,7 +697,7 @@ class TreeNode extends DataItem
         return $res;
     }
 
-    public function sort(string $field, string $order = 'asc'): self
+    public function sort(string $field, string $order = 'asc'): static
     {
         $sortCallback = static::sortByDataField($field, $order);
 
@@ -720,13 +720,13 @@ class TreeNode extends DataItem
      *
      * @return TreeNode
      */
-    public function filter(callable $callable): self
+    public function filter(callable $callable): static
     {
         $copy = $this->getCopy();
 
         $toRemoveIds = [];
 
-        $copy->eachChildsDFS(function (self $childNode) use ($callable, &$toRemoveIds) {
+        $copy->eachChildsDFS(function (TreeNode $childNode) use ($callable, &$toRemoveIds) {
             if (false === call_user_func_array($callable, [$childNode])) {
                 $toRemoveIds[] = $childNode->getId();
             }
@@ -750,7 +750,7 @@ class TreeNode extends DataItem
     {
         $nodes = [];
 
-        $this->eachAllDFS(function (self $childNode) use ($callable, &$nodes) {
+        $this->eachAllDFS(function (TreeNode $childNode) use ($callable, &$nodes) {
             if (call_user_func_array($callable, [$childNode])) {
                 $nodes[] = $childNode;
             }
@@ -769,7 +769,7 @@ class TreeNode extends DataItem
     public function toRaw(?callable $filterCallable = null, ?string $sortField = null, ?string $sortOrder = 'asc'): array
     {
         $data = [];
-        $this->eachChildsDFS(function (self $childNode) use ($filterCallable, &$data) {
+        $this->eachChildsDFS(function (TreeNode $childNode) use ($filterCallable, &$data) {
             if (is_callable($filterCallable)) {
                 $resultNodeData = call_user_func_array($filterCallable, [$childNode->getData()]);
 
