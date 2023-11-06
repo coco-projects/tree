@@ -16,9 +16,9 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * @param mixed $var
      *
-     * @return string
+     * @return string|int
      */
-    private static function hash(mixed $var): string
+    private static function hash(object|string|int $var): string|int
     {
         return is_object($var) ? spl_object_hash($var) : $var;
     }
@@ -61,22 +61,22 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * @param string $offset
+     * @param string|int $offset
      *
      * @return bool
      */
-    public function hasField(string $offset): bool
+    public function hasField(string|int $offset): bool
     {
         return array_key_exists(self::hash($offset), $this->data);
     }
 
     /**
-     * @param string $offset
-     * @param mixed  $value
+     * @param string|int $offset
+     * @param mixed      $value
      *
      * @return $this
      */
-    public function setField(string $offset, mixed $value): static
+    public function setField(string|int $offset, mixed $value): static
     {
         $this->data[self::hash($offset)] = $value;
 
@@ -84,11 +84,11 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * @param string $offset
+     * @param string|int $offset
      *
      * @return $this
      */
-    public function removeField(string $offset): static
+    public function removeField(string|int $offset): static
     {
         unset($this->data[self::hash($offset)]);
 
@@ -96,11 +96,11 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * @param string $offset
+     * @param string|int $offset
      *
      * @return mixed
      */
-    public function fetchField(string $offset): mixed
+    public function fetchField(string|int $offset): mixed
     {
         $value = $this->getField($offset);
         $this->removeField($offset);
@@ -109,11 +109,11 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * @param string $offset
+     * @param string|int $offset
      *
      * @return mixed
      */
-    public function &getField(string $offset): mixed
+    public function &getField(string|int $offset): mixed
     {
         return $this->data[self::hash($offset)];
     }
@@ -154,7 +154,7 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * @inheritDoc
      */
-    public function getIterator(): iterable
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->getData());
     }
@@ -167,21 +167,21 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
         return count($this->getData());
     }
 
-    public function searchByField(string $field, callable $callback): bool
+    public function searchByField(string|int $field, callable $callback): bool
     {
         $value = $this->getField($field);
 
         return call_user_func_array($callback, [$value]);
     }
 
-    public function isEquals(string $field, mixed $val): bool
+    public function isEquals(string|int $field, mixed $val): bool
     {
         return $this->searchByField($field, function ($value) use ($val) {
             return $val == $value;
         });
     }
 
-    public function isStrictEqual(string $field, mixed $val): bool
+    public function isStrictEqual(string|int $field, mixed $val): bool
     {
         return $this->searchByField($field, function ($value) use ($val) {
             return $val === $value;
@@ -189,42 +189,42 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
 
-    public function isGreaterThan(string $field, mixed $val): bool
+    public function isGreaterThan(string|int $field, mixed $val): bool
     {
         return $this->searchByField($field, function ($value) use ($val) {
             return $value > $val;
         });
     }
 
-    public function isGreaterThanOrEqualTo(string $field, mixed $val): bool
+    public function isGreaterThanOrEqualTo(string|int $field, mixed $val): bool
     {
         return $this->searchByField($field, function ($value) use ($val) {
             return $value >= $val;
         });
     }
 
-    public function isLessThan(string $field, mixed $val): bool
+    public function isLessThan(string|int $field, mixed $val): bool
     {
         return $this->searchByField($field, function ($value) use ($val) {
             return $value < $val;
         });
     }
 
-    public function isLessThanOrEqualTo(string $field, mixed $val): bool
+    public function isLessThanOrEqualTo(string|int $field, mixed $val): bool
     {
         return $this->searchByField($field, function ($value) use ($val) {
             return $value <= $val;
         });
     }
 
-    public function isArray(string $field): bool
+    public function isArray(string|int $field): bool
     {
         return $this->searchByField($field, function ($value) {
             return is_array($value);
         });
     }
 
-    public function isStartWith(string $field, string $prefix): bool
+    public function isStartWith(string|int $field, string $prefix): bool
     {
         return $this->searchByField($field, function ($value) use ($prefix) {
             if (!is_string($value)) {
@@ -234,7 +234,7 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
         });
     }
 
-    public function isEndWith(string $field, string $suffix): bool
+    public function isEndWith(string|int $field, string $suffix): bool
     {
         return $this->searchByField($field, function ($value) use ($suffix) {
             if (!is_string($value)) {
@@ -244,7 +244,7 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
         });
     }
 
-    public function isContainsWith(string $field, string $substring): bool
+    public function isContainsWith(string|int $field, string $substring): bool
     {
         return $this->searchByField($field, function ($value) use ($substring) {
             if (!is_string($value)) {

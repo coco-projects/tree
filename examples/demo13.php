@@ -24,7 +24,7 @@
             'parent' => 0,
             'title'  => 'Node 3-3',
             'data'   => 'data 3-3',
-            'order'  => 17,
+            'order'  => 11,
         ],
         [
             'id'     => 4,
@@ -92,7 +92,7 @@
     print_r($tree->toArrayAll());
 
     $result = $tree->filter(function(TreeNode $childNode) {
-        return $childNode->getField('order') <= 13;
+        return $childNode->getField('order') > 13;
     });
     echo PHP_EOL;
 

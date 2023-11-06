@@ -749,7 +749,7 @@ final class TreeTest extends TestCase
                 'parent' => 0,
                 'title'  => 'Node 3-3',
                 'data'   => 'data 3-3',
-                'order'  => 17,
+                'order'  => 11,
             ],
             [
                 'id'     => 4,
@@ -823,9 +823,6 @@ final class TreeTest extends TestCase
             0 => 0,
             1 => 3,
             2 => 9,
-            3 => 1,
-            4 => 8,
-            5 => 4,
         ];
 
         $res1 = [];
@@ -1181,5 +1178,29 @@ final class TreeTest extends TestCase
             });
         });
         $this->assertTrue(true);
+    }
+
+    public function testR()
+    {
+
+        $data1 = [
+            1   => 111,
+            'a' => 'aaa',
+        ];
+
+        $node1 = TreeNode::makeNode(1, null, $data1);
+
+        $node1_copy = $node1->getCopy();
+
+        $node1_copy[1] = 222;
+
+        $node1_copy['a'] = 'bbb';
+
+        $node1_copy[1] = 222;
+        $this->assertTrue($node1[1] == 111);
+        $this->assertTrue($node1_copy[1] == 222);
+
+        $this->assertTrue($node1['a'] == 'aaa');
+        $this->assertTrue($node1_copy['a'] == 'bbb');
     }
 }

@@ -5,6 +5,7 @@
     namespace Coco\tree;
 
     use LogicException;
+    use function DeepCopy\deep_copy;
 
 class TreeNode extends DataItem
 {
@@ -593,7 +594,7 @@ class TreeNode extends DataItem
      */
     public function getCopy(): static
     {
-        return clone $this;
+        return deep_copy($this);
     }
 
     /**
