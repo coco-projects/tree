@@ -4,46 +4,15 @@
 
     namespace Coco\tree;
 
+use Coco\magicAccess\MagicArrayTrait;
+
 class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
 {
-    private array $data = [];
+    use MagicArrayTrait;
 
     public function __construct(array $data = [])
     {
         $this->importData($data);
-    }
-
-    /**
-     * @param mixed $var
-     *
-     * @return string|int
-     */
-    private static function hash(object|string|int $var): string|int
-    {
-        return is_object($var) ? spl_object_hash($var) : $var;
-    }
-
-
-    /**
-     * @param callable $callback
-     *
-     * @return $this
-     */
-    public function eachField(callable $callback): static
-    {
-        foreach ($this as $k => &$v) {
-            $callback($v, $k);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getData(): array
-    {
-        return $this->data;
     }
 
     /**
@@ -67,7 +36,7 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function hasField(string|int $offset): bool
     {
-        return array_key_exists(self::hash($offset), $this->data);
+        return $this->offsetExists($offset);
     }
 
     /**
@@ -78,7 +47,7 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function setField(string|int $offset, mixed $value): static
     {
-        $this->data[self::hash($offset)] = $value;
+        $this->offsetSet($offset,$value);
 
         return $this;
     }
@@ -90,7 +59,7 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function removeField(string|int $offset): static
     {
-        unset($this->data[self::hash($offset)]);
+        $this->offsetUnset($offset);
 
         return $this;
     }
@@ -115,57 +84,9 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function &getField(string|int $offset): mixed
     {
-        return $this->data[self::hash($offset)];
+        return $this->offsetGet($offset);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function offsetExists($offset): bool
-    {
-        return $this->hasField($offset);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function &offsetGet($offset): mixed
-    {
-        return $this->getField($offset);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function offsetSet($offset, $value): void
-    {
-        $this->setField($offset, $value);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function offsetUnset($offset): void
-    {
-
-        $this->removeField($offset);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getIterator(): \Traversable
-    {
-        return new \ArrayIterator($this->getData());
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function count(): int
-    {
-        return count($this->getData());
-    }
 
     public function searchByField(string|int $field, callable $callback): bool
     {
@@ -254,8 +175,4 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
         });
     }
 
-    public function destroy(): void
-    {
-        $this->data = [];
-    }
 }

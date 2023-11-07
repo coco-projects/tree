@@ -22,6 +22,7 @@
         ]);
     });
 
+    unset($data['d']);
     echo PHP_EOL;
     echo PHP_EOL;
 

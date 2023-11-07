@@ -3,10 +3,10 @@
 	"description"          : "Tree structure management tool that allows easy operations such as adding, modifying, deleting, searching, serializing, and deserializing nodes in a hierarchical structure.",
 	"type"                 : "library",
 	"license"              : "MIT",
-	"minimum-stability"    : "dev",
 	"require"              : {
-		"php": ">=8.0",
-		"myclabs/deep-copy": "1.x-dev"
+		"php"                       : ">=8.0",
+		"coco-project/magic-access" : "^1.0",
+		"myclabs/deep-copy"         : "^1.11"
 	},
 	"autoload"             : {
 		"psr-4" : {
