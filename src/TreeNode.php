@@ -81,7 +81,7 @@ class TreeNode extends DataItem
     }
 
     /**
-     * @return TreeNode[]
+     * @return $this[]
      */
     public function getChildsNode(): array
     {
@@ -132,7 +132,7 @@ class TreeNode extends DataItem
      *
      * @param callable $callable
      *
-     * @return TreeNode
+     * @return $this
      */
     public function eachParents(callable $callable): static
     {
@@ -169,7 +169,7 @@ class TreeNode extends DataItem
     /**
      * 获取当前元素的最上级根节点
      *
-     * @return TreeNode|null
+     * @return $this|null
      */
     public function getTopParent(): ?TreeNode
     {
@@ -190,7 +190,7 @@ class TreeNode extends DataItem
      *
      * @param int $childId
      *
-     * @return TreeNode|null
+     * @return $this|null
      */
     public function getChildRecrusive(int $childId): ?TreeNode
     {
@@ -209,7 +209,7 @@ class TreeNode extends DataItem
      *
      * @param int $childId
      *
-     * @return TreeNode
+     * @return $this
      */
     public function removeChildRecrusive(int $childId): static
     {
@@ -228,7 +228,7 @@ class TreeNode extends DataItem
      *
      * @param int $childId
      *
-     * @return TreeNode
+     * @return $this
      */
     public function removeChild(int $childId): static
     {
@@ -282,7 +282,7 @@ class TreeNode extends DataItem
      * @param TreeNode $childNodeToAdd
      * @param int      $toChildNodeId
      *
-     * @return TreeNode
+     * @return $this
      */
     public function addChildRecrusive(TreeNode $childNodeToAdd, int $toChildNodeId): static
     {
@@ -353,7 +353,7 @@ class TreeNode extends DataItem
      *
      * @param TreeNode $childNode
      *
-     * @return TreeNode
+     * @return $this
      */
     public function addChild(TreeNode $childNode): static
     {
@@ -389,7 +389,7 @@ class TreeNode extends DataItem
      *
      * @param callable $childProcessor
      *
-     * @return TreeNode
+     * @return $this
      */
     public function eachChilds(callable $childProcessor): static
     {
@@ -412,7 +412,7 @@ class TreeNode extends DataItem
      *
      * @param callable $childProcessor
      *
-     * @return TreeNode
+     * @return $this
      */
     public function eachAllDFS(callable $childProcessor): static
     {
@@ -430,7 +430,7 @@ class TreeNode extends DataItem
      *
      * @param callable $childProcessor
      *
-     * @return TreeNode
+     * @return $this
      */
     public function eachAllBFS(callable $childProcessor): static
     {
@@ -452,7 +452,7 @@ class TreeNode extends DataItem
      *
      * @param callable $childProcessor
      *
-     * @return TreeNode
+     * @return $this
      */
     public function eachChildsDFS(callable $childProcessor): static
     {
@@ -472,7 +472,7 @@ class TreeNode extends DataItem
      *
      * @param callable $childProcessor
      *
-     * @return TreeNode
+     * @return $this
      */
     public function eachChildsBFS(callable $childProcessor): static
     {
@@ -579,7 +579,7 @@ class TreeNode extends DataItem
      *
      * @param TreeNode $parentNode
      *
-     * @return TreeNode
+     * @return $this
      */
     public function appendTo(TreeNode $parentNode): static
     {
@@ -693,7 +693,7 @@ class TreeNode extends DataItem
     {
         $res = json_encode($this->toArrayAll($whitIdIndex));
         if (!is_string($res)) {
-            $res = '';
+            throw new LogicException(json_last_error_msg());
         }
         return $res;
     }
@@ -719,7 +719,7 @@ class TreeNode extends DataItem
      *
      * @param callable $callable
      *
-     * @return TreeNode
+     * @return $this
      */
     public function filter(callable $callable): static
     {
@@ -745,7 +745,7 @@ class TreeNode extends DataItem
      *
      * @param callable $callable
      *
-     * @return TreeNode[]
+     * @return $this[]
      */
     public function searchNodes(callable $callable): array
     {

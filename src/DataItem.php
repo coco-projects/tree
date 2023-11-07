@@ -47,7 +47,7 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function setField(string|int $offset, mixed $value): static
     {
-        $this->offsetSet($offset,$value);
+        $this->offsetSet($offset, $value);
 
         return $this;
     }
@@ -174,5 +174,4 @@ class DataItem implements \ArrayAccess, \Countable, \IteratorAggregate
             return str_contains($value, $substring);
         });
     }
-
 }
