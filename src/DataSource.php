@@ -48,14 +48,26 @@ class DataSource
         $dataProcessor = $this->getDataFields();
         $data_         = $this->getData();
 
+        if (is_null($this->parentField)) {
+            $this->parentField = '____PARENT_FIELD__';
+
+            foreach ($data_ as $k => &$dataItem_) {
+                $dataItem_['____PARENT_FIELD__'] = 0;
+            }
+        }
+
         usort($data_, function ($a, $b) {
-            return ($a[$this->getParentField()] < $b[$this->getParentField()]) ? -1 : 1;
+            if ($a[$this->parentField] == $b[$this->parentField]) {
+                return 0;
+            }
+
+            return ($a[$this->parentField] < $b[$this->parentField]) ? -1 : 1;
         });
 
         foreach ($data_ as $k => $dataItem) {
             $node = [
-                "node" => new TreeNode($dataItem[$this->getIdField()]),
-                "pid"  => $dataItem[$this->getParentField()],
+                "node" => new TreeNode($dataItem[$this->idField]),
+                "pid"  => $dataItem[$this->parentField],
                 "data" => (function () use ($dataProcessor, $data_, $dataItem) {
 
                     $data = [];
@@ -152,11 +164,11 @@ class DataSource
     }
 
     /**
-     * @param string $parentField
+     * @param ?string $parentField
      *
      * @return $this
      */
-    public function setParentField(string $parentField): static
+    public function setParentField(?string $parentField): static
     {
         $this->parentField = $parentField;
 

@@ -786,11 +786,21 @@ class TreeNode extends DataItem
             switch ($sortOrder) {
                 case self::SORT_ORDER_ASC:
                     usort($data, function (array $a, array $b) use ($sortField) {
+
+                        if ($a[$sortField] == $b[$sortField]) {
+                            return 0;
+                        }
+
                         return ($a[$sortField] < $b[$sortField]) ? -1 : 1;
                     });
                     break;
                 case self::SORT_ORDER_DESC:
                     usort($data, function (array $a, array $b) use ($sortField) {
+
+                        if ($a[$sortField] == $b[$sortField]) {
+                            return 0;
+                        }
+
                         return ($a[$sortField] > $b[$sortField]) ? -1 : 1;
                     });
                     break;
@@ -818,11 +828,20 @@ class TreeNode extends DataItem
             switch ($order) {
                 case self::SORT_ORDER_ASC:
                     usort($t, function (TreeNode $a, TreeNode $b) use ($field) {
+
+                        if ($a->getField($field) == $b->getField($field)) {
+                            return 0;
+                        }
+
                         return ($a->getField($field) < $b->getField($field)) ? -1 : 1;
                     });
                     break;
                 case self::SORT_ORDER_DESC:
                     usort($t, function (TreeNode $a, TreeNode $b) use ($field) {
+
+                        if ($a->getField($field) == $b->getField($field)) {
+                            return 0;
+                        }
                         return ($a->getField($field) > $b->getField($field)) ? -1 : 1;
                     });
                     break;

@@ -53,34 +53,40 @@ class Tree
     /**
      * 将树导出为自定义结构的数组
      *
-     * @param TreeNode $tree
-     * @param callable $callable
+     * @param TreeNode      $tree
+     * @param callable      $callable
+     * @param callable|null $indexCallback
      *
      * @return array
      */
-    public static function transformer(TreeNode $tree, callable $callable): array
+    public static function transformer(TreeNode $tree, callable $callable, callable $indexCallback = null): array
     {
         $result = call_user_func_array($callable, [$tree]);
 
-        return self::_processArray($result, $tree, $callable);
+        return self::_processArray($result, $tree, $callable, $indexCallback);
     }
 
     /**
-     * @param array    $arr
-     * @param TreeNode $treeNode
-     * @param callable $callable
+     * @param array         $arr
+     * @param TreeNode      $treeNode
+     * @param callable      $callable
+     * @param callable|null $indexCallback
      *
      * @return array
      */
-    private static function _processArray(array &$arr, TreeNode $treeNode, callable $callable): array
+    private static function _processArray(array &$arr, TreeNode $treeNode, callable $callable, callable $indexCallback = null): array
     {
-        foreach ($arr as $k => &$v) {
+        foreach ($arr as &$v) {
             if ($v == '__CHILDS_FIELD__') {
-                $v = (function () use ($treeNode, $callable) {
+                $v = (function () use ($treeNode, $callable, $indexCallback) {
                     $childs = [];
-                    $treeNode->eachChilds(function (TreeNode $childNode) use (&$childs, $callable) {
-
-                        $childs[] = static::transformer($childNode, $callable);
+                    $treeNode->eachChilds(function (TreeNode $childNode) use (&$childs, $callable, $indexCallback) {
+                        if (is_callable($indexCallback)) {
+                            $index = call_user_func_array($indexCallback, [$childNode]);
+                            $childs[$index] = static::transformer($childNode, $callable, $indexCallback);
+                        } else {
+                            $childs[] = static::transformer($childNode, $callable, $indexCallback);
+                        }
                     });
 
                     return $childs;
@@ -88,7 +94,7 @@ class Tree
             }
 
             if (is_array($v)) {
-                self::_processArray($v, $treeNode, $callable);
+                self::_processArray($v, $treeNode, $callable, $indexCallback);
             }
         }
 
