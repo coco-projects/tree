@@ -9,11 +9,11 @@
      */
 class DataSource
 {
-    public array       $data        = [];
-    public string|null $idField     = null;
-    public array       $dataFields  = [];
-    public string|null $parentField = null;
-    public int         $rootId      = 0;
+    protected array       $data        = [];
+    protected string|null $idField     = null;
+    protected array       $dataFields  = [];
+    protected string|null $parentField = null;
+    protected int         $rootId      = 0;
 
     public function __construct(array $data = [])
     {

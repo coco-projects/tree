@@ -12,14 +12,14 @@ class TreeNode extends DataItem
     const SORT_ORDER_ASC  = 'asc';
     const SORT_ORDER_DESC = 'desc';
 
-    public int|null $id = null;
+    protected int|null $id = null;
 
-    public ?TreeNode $parentNode = null;
+    protected ?TreeNode $parentNode = null;
 
     /**
      * @var TreeNode[] $childs
      */
-    public array $childsNode = [];
+    protected array $childsNode = [];
 
     public function __construct(int $id, ?TreeNode $parentNode = null, array $data = [])
     {
