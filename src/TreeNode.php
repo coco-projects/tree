@@ -812,6 +812,31 @@ class TreeNode extends DataItem
         return $data;
     }
 
+
+    /**
+     * 转为回调方式处理
+     *
+     * @param callable $callback
+     *
+     * @return $this
+     */
+    public function processor(callable $callback): static
+    {
+        $childs = [];
+
+        call_user_func_array($callback, [
+            $this,
+            &$childs,
+        ]);
+
+        foreach ($childs as $k => $v) {
+            $this->addChild($v);
+        }
+
+        return $this;
+    }
+
+
     /**
      * 预定排序方法，按 data 里的字段排序
      *

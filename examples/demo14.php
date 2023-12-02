@@ -96,11 +96,12 @@
     echo PHP_EOL;
 
     var_export($tree->toRaw(function(array $childNodeData) {
-        if ($childNodeData['order'] > 14)
+        if ($childNodeData['order'] > 0)
         {
             return [
-                "id"   => $childNodeData['id'],
-                "data" => $childNodeData['data'],
+                "id"     => $childNodeData['id'],
+                "data"   => $childNodeData['data'],
+                "parent" => $childNodeData['parent'],
             ];
         }
     }, 'id', TreeNode::SORT_ORDER_ASC));
