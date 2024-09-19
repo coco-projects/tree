@@ -97,10 +97,9 @@
 
     foreach ($res1 as $k => $v)
     {
-        echo $v->getId(), ' => ', $v['title'];
+        echo $v->getId() . ' => ' . $v['title'];
         echo PHP_EOL;
     }
-
     echo PHP_EOL;
 
     $res2 = $tree->searchNodes(function(TreeNode $childNode) {
@@ -109,10 +108,9 @@
 
     foreach ($res2 as $k => $v)
     {
-        echo $v->getId(), ' => ', $v['title'];
+        echo $v->getId() . ' => ' . $v['title'];
         echo PHP_EOL;
     }
-
     echo PHP_EOL;
 
     $res3 = $tree->searchNodes(function(TreeNode $childNode) {
@@ -121,10 +119,9 @@
 
     foreach ($res3 as $k => $v)
     {
-        echo $v->getId(), ' => ', $v['order'];
+        echo $v->getId() . ' => ' . $v['order'];
         echo PHP_EOL;
     }
-
     echo PHP_EOL;
 
     $res4 = $tree->searchNodes(function(TreeNode $childNode) {
@@ -134,6 +131,7 @@
             {
                 return false;
             }
+
             return !!preg_match('#-3$#ius', $value);
         });
 
@@ -141,6 +139,6 @@
 
     foreach ($res4 as $k => $v)
     {
-        echo $v->getId(), ' => ', $v['title'];
+        echo $v->getId() . ' => ' . $v['title'];
         echo PHP_EOL;
     }

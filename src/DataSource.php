@@ -37,6 +37,10 @@ class DataSource
             }
         }
 
+        foreach ($this->getDataFields() as $k => $v)
+        {
+            $rootNode->setField($k, null);
+        }
         return $rootNode;
     }
 
